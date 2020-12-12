@@ -31,7 +31,7 @@ void reset(void) {
     g_state.plyr_tile_x = ((int) g_state.plyr_head_x / 8) * 8;
     g_state.plyr_tile_y = ((int) g_state.plyr_head_y / 8) * 8;
     
-    g_state.num_bodies = 3;
+    g_state.num_bodies = 1;
     g_state.max_bodies = 100;
     
     g_state.plyr_bodies[0] = &OAM[1];
@@ -47,7 +47,7 @@ void reset(void) {
         g_state.plyr_bodies[i]->attr1 = 0; // 8x8 size when square
         g_state.plyr_bodies[i]->attr2 = SNAKE_BODY;
         
-        g_state.plyr_bodies_x[i] = g_state.plyr_tile_x - 8 * (i + 1);
+        g_state.plyr_bodies_x[i] = g_state.plyr_tile_x - 8 * i;
         g_state.plyr_bodies_y[i] = g_state.plyr_tile_y;
         
         set_obj_pos(
