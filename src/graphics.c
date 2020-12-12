@@ -190,6 +190,28 @@ uint16_t tile_snek_k[sizeof(tile_4bpp_t) / 2] = {
     0x0010, 0x0001
 };
 
+uint16_t tile_snek_d[sizeof(tile_4bpp_t) / 2] = {
+    0x0000, 0x1111,
+    0x0011, 0x0001,
+    0x0100, 0x0001,
+    0x1000, 0x0001,
+    0x1000, 0x0001,
+    0x0100, 0x0001,
+    0x0011, 0x0001,
+    0x0000, 0x1111
+};
+
+uint16_t tile_snek_a[sizeof(tile_4bpp_t) / 2] = {
+    0x0001, 0x1000,
+    0x0010, 0x0100,
+    0x0010, 0x0100,
+    0x0100, 0x0010,
+    0x0111, 0x1110,
+    0x1000, 0x0001,
+    0x1000, 0x0001,
+    0x1000, 0x0001
+};
+
 void load_background(void) {
     // Load bg into character memory
     volatile uint16_t *checker = (uint16_t *) TILE_MEM[0][1];
@@ -199,6 +221,8 @@ void load_background(void) {
     volatile uint16_t *snek_n = (uint16_t *) TILE_MEM[0][5];
     volatile uint16_t *snek_e = (uint16_t *) TILE_MEM[0][6];
     volatile uint16_t *snek_k = (uint16_t *) TILE_MEM[0][7];
+    volatile uint16_t *snek_d = (uint16_t *) TILE_MEM[0][8];
+    volatile uint16_t *snek_a = (uint16_t *) TILE_MEM[0][9];
     for(int i = 0; i < sizeof(tile_4bpp_t) / 2; i += 2) {
         checker[i] = tile_checkered[i + 1];
         checker[i + 1] = tile_checkered[i];
@@ -214,11 +238,16 @@ void load_background(void) {
         snek_e[i + 1] = tile_snek_e[i];
         snek_k[i] = tile_snek_k[i + 1];
         snek_k[i + 1] = tile_snek_k[i];
+        snek_d[i] = tile_snek_d[i + 1];
+        snek_d[i + 1] = tile_snek_d[i];
+        snek_a[i] = tile_snek_a[i + 1];
+        snek_a[i + 1] = tile_snek_a[i];
     }
     
     // Load tile map into screenblock 8
     volatile uint16_t *map0 = (uint16_t *) SCREEN_BLOCK_MEM[1];
     volatile uint16_t *map1 = (uint16_t *) SCREEN_BLOCK_MEM[2];
+    volatile uint16_t *map2 = (uint16_t *) SCREEN_BLOCK_MEM[3];
     for(int row = 0; row < 32; row++) {
         for(int col = 0; col < 32; col++) {
             if(row == 0 || row == 19 || col == 0 || col == 29) {
@@ -228,10 +257,18 @@ void load_background(void) {
             }
         }
     }
+    
+    // S N E K
     map1[10 * 32 + 15 - 3] = 4;
     map1[10 * 32 + 15 - 1] = 5;
     map1[10 * 32 + 15 + 1] = 6;
     map1[10 * 32 + 15 + 3] = 7;
+    
+    // D E A D
+    map2[10 * 32 + 15 - 3] = 8;
+    map2[10 * 32 + 15 - 1] = 6;
+    map2[10 * 32 + 15 + 1] = 9;
+    map2[10 * 32 + 15 + 3] = 8;
     
     /*
      * Enable background
@@ -239,7 +276,7 @@ void load_background(void) {
      * Size 00, Screen Block 1, Color Mode 0, Tile Block 0, Depth 0
      * 0000 0001 0000 000
      */
-    REG_BG0_CONTROL = 0x0101;
+    REG_BG0_CONTROL = 0x0102;
     REG_BG1_CONTROL = 0x0200;
 }
 

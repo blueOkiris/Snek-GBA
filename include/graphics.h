@@ -25,6 +25,8 @@ extern uint16_t tile_snek_s[sizeof(tile_4bpp_t) / 2];
 extern uint16_t tile_snek_n[sizeof(tile_4bpp_t) / 2];
 extern uint16_t tile_snek_e[sizeof(tile_4bpp_t) / 2];
 extern uint16_t tile_snek_k[sizeof(tile_4bpp_t) / 2];
+extern uint16_t tile_snek_d[sizeof(tile_4bpp_t) / 2];
+extern uint16_t tile_snek_a[sizeof(tile_4bpp_t) / 2];
 
 void load_sprites(void);
 void load_background(void);

@@ -52,6 +52,7 @@ typedef uint16_t rgb15_t;
 #define MAP_MODE_1D 0x0040
 #define BG0_EN      0x0100
 #define BG1_EN      0x0200
+#define BG2_EN      0x0400
 
 #define IO_MEM      0x04000000
 #define PALLETE_MEM 0x05000000

@@ -180,10 +180,16 @@ int main(void) {
             
             // Die
             if(g_state.plyr_tile_x == 0
-                    || g_state.plyr_tile_x == SCREEN_WIDTH / 8
+                    || g_state.plyr_tile_x == SCREEN_WIDTH - 8
                     || g_state.plyr_tile_y == 0
-                    || g_state.plyr_tile_y == SCREEN_HEIGHT / 8) {
+                    || g_state.plyr_tile_y == SCREEN_HEIGHT - 8) {
                 room = DEATH;
+            }
+            for(int i = 1; i < g_state.num_bodies + 1; i++) {
+                if(g_state.plyr_bodies_x[i] == g_state.plyr_tile_x
+                        && g_state.plyr_bodies_y[i] == g_state.plyr_tile_y) {
+                    room = DEATH;
+                }
             }
         } else if(room == PAUSED) {
             if(g_state.keys & KEY_START) {
@@ -196,6 +202,8 @@ int main(void) {
                 room = TITLE;
             }
         } else if(room == DEATH) {
+            REG_BG1_CONTROL = 0x0301; // Place dead in front
+            
             g_state.plyr_head_obj->attr2 = BLANK;
             for(int i = 0; i < g_state.max_bodies + 1; i++) {
                 g_state.plyr_bodies[i]->attr2 = BLANK;
