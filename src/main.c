@@ -11,10 +11,10 @@ int main(void) {
     reset();
     
     // Set up a timer to be 1:1 with clock
-    volatile uint16_t *tmr1_ctrl = (volatile uint16_t *) 0x04000102;
-    volatile uint16_t *tmr1_data = (volatile uint16_t *) 0x04000100;
-    *tmr1_data = 0;
-    *tmr1_ctrl = 0x0081; // b8 - en, b6 - intrp, b2 - cascade, b1-0 - freq
+    volatile uint16_t *tmr0_ctrl = (volatile uint16_t *) 0x04000102;
+    volatile uint16_t *tmr0_data = (volatile uint16_t *) 0x04000100;
+    *tmr0_data = 0;
+    *tmr0_ctrl = 0x0081; // b8 - en, b6 - intrp, b2 - cascade, b1-0 - freq
     
     int room = TITLE;
     
@@ -55,16 +55,14 @@ int main(void) {
                 room = TITLE;
             }
             
-            // Update direction
+            // Update direction            
             if(g_state.keys & KEY_UP && g_state.plyr_dir != DOWN) {
                 g_state.plyr_dir = UP;
             } else if(g_state.keys & KEY_DOWN && g_state.plyr_dir != UP) {
                 g_state.plyr_dir = DOWN;
-            } else if(g_state.keys & KEY_LEFT
-                    && g_state.plyr_dir != RIGHT) {
+            } else if(g_state.keys & KEY_LEFT && g_state.plyr_dir != RIGHT) {
                 g_state.plyr_dir = LEFT;
-            } else if(g_state.keys & KEY_RIGHT
-                    && g_state.plyr_dir != LEFT) {
+            } else if(g_state.keys & KEY_RIGHT && g_state.plyr_dir != LEFT) {
                 g_state.plyr_dir = RIGHT;
             }
             
@@ -140,10 +138,10 @@ int main(void) {
             }
         }
         
-        delta_ms = *tmr1_data / (float) CLOCKS_PER_SEC;
-        *tmr1_ctrl = 0;
-        *tmr1_data = 0x0000;
-        *tmr1_ctrl = 0x0081;
+        delta_ms = *tmr0_data / (float) CLOCKS_PER_SEC;
+        *tmr0_ctrl = 0;
+        *tmr0_data = 0x0000;
+        *tmr0_ctrl = 0x0081;
     }
     
     return 0;
