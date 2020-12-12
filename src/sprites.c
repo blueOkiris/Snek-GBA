@@ -48,6 +48,27 @@ uint16_t spr_snake_head_right[sizeof(tile_4bpp_t) / 2] = {
     0x0033, 0x5533,
     0x0000, 0x4330,
 };
+uint16_t spr_snake_body[sizeof(tile_4bpp_t) / 2] = {
+    0x0011, 0x4300,
+    0x0433, 0x2230,
+    0x3533, 0x3223,
+    0x3533, 0x3313,
+    0x3553, 0x3331,
+    0x3555, 0x3351,
+    0x0355, 0x5530,
+    0x0034, 0x3300
+};
+
+uint16_t spr_blank[sizeof(tile_4bpp_t) / 2] = {
+    0x0000, 0x0000,
+    0x0000, 0x0000,
+    0x0000, 0x0000,
+    0x0000, 0x0000,
+    0x0000, 0x0000,
+    0x0000, 0x0000,
+    0x0000, 0x0000,
+    0x0000, 0x0000
+};
 
 void load_sprites(void) {
     volatile uint16_t *snake_head_up_tile =
@@ -58,6 +79,8 @@ void load_sprites(void) {
         (uint16_t *) TILE_MEM[4][SNAKE_HEAD_LEFT];
     volatile uint16_t *snake_head_right_tile =
         (uint16_t *) TILE_MEM[4][SNAKE_HEAD_RIGHT];
+    volatile uint16_t *snake_body_tile = (uint16_t *) TILE_MEM[4][SNAKE_BODY];
+    volatile uint16_t *blank_tile = (uint16_t *) TILE_MEM[4][BLANK];
     for(int i = 0; i < sizeof(tile_4bpp_t) / 2; i += 2) {
         snake_head_up_tile[i] = spr_snake_head_up[i + 1];
         snake_head_up_tile[i + 1] = spr_snake_head_up[i];
@@ -67,5 +90,11 @@ void load_sprites(void) {
         snake_head_left_tile[i + 1] = spr_snake_head_left[i];
         snake_head_right_tile[i] = spr_snake_head_right[i + 1];
         snake_head_right_tile[i + 1] = spr_snake_head_right[i];
+        
+        snake_body_tile[i] = spr_snake_body[i + 1];
+        snake_body_tile[i + 1] = spr_snake_body[i];
+        
+        blank_tile[i] = spr_blank[i + 1];
+        blank_tile[i + 1] = spr_blank[i];
     }
 }

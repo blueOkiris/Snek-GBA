@@ -15,8 +15,14 @@
 typedef struct {
     volatile obj_attrs *plyr_head_obj;
     float plyr_head_x, plyr_head_y;
+    int plyr_tile_x, plyr_tile_y;
     int plyr_width, plyr_height;
     int plyr_spd, plyr_dir;
+    
+    int num_bodies, max_bodies;
+    volatile obj_attrs *plyr_bodies[101];
+    float plyr_bodies_x[101];
+    float plyr_bodies_y[101];
     
     uint32_t keys;
 } game_state_t;
