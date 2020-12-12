@@ -88,25 +88,25 @@ int main(void) {
                 case UP:
                     g_state.plyr_head_y = clamp(
                         g_state.plyr_head_y - delta_ms * g_state.plyr_spd,
-                        8, SCREEN_HEIGHT - 16
+                        0, SCREEN_HEIGHT - 8
                     );
                     break;
                 case DOWN:
                     g_state.plyr_head_y = clamp(
                         g_state.plyr_head_y + delta_ms * g_state.plyr_spd,
-                        8, SCREEN_HEIGHT - 16
+                        0, SCREEN_HEIGHT - 8
                     );
                     break;
                 case LEFT:
                     g_state.plyr_head_x = clamp(
                         g_state.plyr_head_x - delta_ms * g_state.plyr_spd,
-                        8, SCREEN_WIDTH - 16
+                        0, SCREEN_WIDTH - 8
                     );
                     break;
                 case RIGHT:
                     g_state.plyr_head_x = clamp(
                         g_state.plyr_head_x + delta_ms * g_state.plyr_spd,
-                        8, SCREEN_WIDTH - 16
+                        0, SCREEN_WIDTH - 8
                     );
                     break;
             }
@@ -177,6 +177,14 @@ int main(void) {
                 }
                 g_state.plyr_bodies[g_state.num_bodies]->attr2 = SNAKE_BODY;
             }
+            
+            // Die
+            if(g_state.plyr_tile_x == 0
+                    || g_state.plyr_tile_x == SCREEN_WIDTH / 8
+                    || g_state.plyr_tile_y == 0
+                    || g_state.plyr_tile_y == SCREEN_HEIGHT / 8) {
+                room = DEATH;
+            }
         } else if(room == PAUSED) {
             if(g_state.keys & KEY_START) {
                 while(g_state.keys & KEY_START) {
@@ -185,6 +193,19 @@ int main(void) {
                 room = GAME;
             }
             if(g_state.keys & KEY_SELECT) {
+                room = TITLE;
+            }
+        } else if(room == DEATH) {
+            g_state.plyr_head_obj->attr2 = BLANK;
+            for(int i = 0; i < g_state.max_bodies + 1; i++) {
+                g_state.plyr_bodies[i]->attr2 = BLANK;
+            }
+            g_state.frog->attr2 = BLANK;
+            
+            if(g_state.keys & KEY_START) {
+                while(g_state.keys & KEY_START) {
+                    g_state.keys = ~REG_KEY_INPUT & KEY_ANY;
+                }
                 room = TITLE;
             }
         }
