@@ -34,5 +34,4 @@ typedef struct {
 
 extern game_state_t g_state;
 
-void set_palletes(void);
 void reset(void);

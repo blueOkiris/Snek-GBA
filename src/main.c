@@ -1,10 +1,11 @@
 #include <gba.h>
-#include <sprites.h>
+#include <graphics.h>
 #include <game.h>
 
 #define CLOCKS_PER_SEC  262144
 
 int main(void) {
+    load_background();
     load_sprites();
     set_palletes();
     reset();
@@ -19,13 +20,16 @@ int main(void) {
     
     double delta_ms = 0.1667;
     while(1) {
+        /* vsync stopped working here for some reason??? */
         // Skip past vblanks and vdraws
-        while(REG_DISPLAY_VCONT >= 160);
-        while(REG_DISPLAY_VCONT < 160);
+        //while(REG_DISPLAY_VCONT >= 160);
+        //while(REG_DISPLAY_VCONT < 160);
         
         g_state.keys = ~REG_KEY_INPUT & KEY_ANY;
         
         if(room == TITLE) {
+            REG_BG1_CONTROL = 0x0200; // Place title in front
+            
             g_state.plyr_head_obj->attr2 = BLANK;
             for(int i = 0; i < g_state.max_bodies + 1; i++) {
                 g_state.plyr_bodies[i]->attr2 = BLANK;
@@ -34,7 +38,9 @@ int main(void) {
             if(g_state.keys & KEY_START) {
                 while(g_state.keys & KEY_START) {
                     g_state.keys = ~REG_KEY_INPUT & KEY_ANY;
-                }      
+                }
+                REG_BG1_CONTROL = 0x0202; // Place title behind
+                
                 room = GAME;
                 reset();
             }
@@ -45,31 +51,47 @@ int main(void) {
                 }
                 room = PAUSED;
             }
+            if(g_state.keys & KEY_SELECT) {
+                room = TITLE;
+            }
+            
+            // Update direction
+            if(g_state.keys & KEY_UP && g_state.plyr_dir != DOWN) {
+                g_state.plyr_dir = UP;
+            } else if(g_state.keys & KEY_DOWN && g_state.plyr_dir != UP) {
+                g_state.plyr_dir = DOWN;
+            } else if(g_state.keys & KEY_LEFT
+                    && g_state.plyr_dir != RIGHT) {
+                g_state.plyr_dir = LEFT;
+            } else if(g_state.keys & KEY_RIGHT
+                    && g_state.plyr_dir != LEFT) {
+                g_state.plyr_dir = RIGHT;
+            }
             
             // Move
             switch(g_state.plyr_dir) {
                 case UP:
                     g_state.plyr_head_y = clamp(
                         g_state.plyr_head_y - delta_ms * g_state.plyr_spd,
-                        0, SCREEN_HEIGHT - 8
+                        8, SCREEN_HEIGHT - 16
                     );
                     break;
                 case DOWN:
                     g_state.plyr_head_y = clamp(
                         g_state.plyr_head_y + delta_ms * g_state.plyr_spd,
-                        0, SCREEN_HEIGHT - 8
+                        8, SCREEN_HEIGHT - 16
                     );
                     break;
                 case LEFT:
                     g_state.plyr_head_x = clamp(
                         g_state.plyr_head_x - delta_ms * g_state.plyr_spd,
-                        0, SCREEN_WIDTH - 8
+                        8, SCREEN_WIDTH - 16
                     );
                     break;
                 case RIGHT:
                     g_state.plyr_head_x = clamp(
                         g_state.plyr_head_x + delta_ms * g_state.plyr_spd,
-                        0, SCREEN_WIDTH - 8
+                        8, SCREEN_WIDTH - 16
                     );
                     break;
             }
@@ -103,19 +125,6 @@ int main(void) {
                     g_state.plyr_head_obj,
                     g_state.plyr_tile_x, g_state.plyr_tile_y
                 );
-                
-                // Update direction
-                if(g_state.keys & KEY_UP && g_state.plyr_dir != DOWN) {
-                    g_state.plyr_dir = UP;
-                } else if(g_state.keys & KEY_DOWN && g_state.plyr_dir != UP) {
-                    g_state.plyr_dir = DOWN;
-                } else if(g_state.keys & KEY_LEFT
-                        && g_state.plyr_dir != RIGHT) {
-                    g_state.plyr_dir = LEFT;
-                } else if(g_state.keys & KEY_RIGHT
-                        && g_state.plyr_dir != LEFT) {
-                    g_state.plyr_dir = RIGHT;
-                }
             }
             
             g_state.plyr_head_obj->attr2 = g_state.plyr_dir + 1;
@@ -125,6 +134,9 @@ int main(void) {
                     g_state.keys = ~REG_KEY_INPUT & KEY_ANY;
                 }
                 room = GAME;
+            }
+            if(g_state.keys & KEY_SELECT) {
+                room = TITLE;
             }
         }
         

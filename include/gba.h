@@ -45,14 +45,27 @@ typedef signed int int32_t;
 
 typedef uint16_t rgb15_t;
 
+#define VIDEO_MODE0 0x0000
+#define OBJ_ENABLE  0x1000
+#define MAP_MODE_1D 0x0040
+#define BG0_EN      0x0100
+#define BG1_EN      0x0200
+
 #define IO_MEM      0x04000000
 #define PALLETE_MEM 0x05000000
 #define VIDEO_MEM   0x06000000
 #define OBJECT_MEM  0x07000000
 
+#define REG_BG0_CONTROL     *((volatile uint16_t *) 0x04000008)
+#define REG_BG1_CONTROL     *((volatile uint16_t *) 0x0400000A)
+#define REG_BG2_CONTROL     *((volatile uint16_t *) 0x0400000C)
+#define REG_BG3_CONTROL     *((volatile uint16_t *) 0x0400000E)
+
 #define OAM                 ((volatile obj_attrs *) OBJECT_MEM)
-#define TILE_MEM            ((volatile tile_block *) VIDEO_MEM)
+#define TILE_MEM            ((volatile tile_block_t *) VIDEO_MEM)
+#define SCREEN_BLOCK_MEM    ((volatile screen_block_t *) VIDEO_MEM)
 #define OBJ_PALLETE0        ((volatile rgb15_t *) (PALLETE_MEM + 0x200))
+#define BG_PALLETE0         ((volatile rgb15_t *) (PALLETE_MEM))
 #define REG_DISPLAY         (*((volatile uint32_t *) (IO_MEM)))
 #define REG_DISPLAY_VCONT   (*((volatile uint32_t *) (IO_MEM + 0x0006)))
 #define REG_KEY_INPUT       (*((volatile uint32_t *) (IO_MEM + 0x0130)))
@@ -88,7 +101,8 @@ typedef struct {
     uint16_t pad;
 } __attribute__((packed, aligned(4))) obj_attrs;
 typedef uint32_t tile_4bpp_t[8];
-typedef tile_4bpp_t tile_block[512];
+typedef tile_4bpp_t tile_block_t[512];
+typedef uint16_t screen_block_t[1024];
 
 // Form a 15-bit BGR color from component values
 static inline rgb15_t color(int r, int g, int b) {
@@ -103,4 +117,23 @@ static inline void set_obj_pos(volatile obj_attrs *obj, int x, int y) {
 
 static inline double clamp(float value, float min, float max) {
     return (value < min ? min : (value > max ? max : value));
+}
+
+static inline uint16_t reverse_bits(uint16_t num) {
+    uint16_t reverse_num = 0;
+    for (int i = 0; i < 16; i++) {
+        if(num & (1 << i)) {
+           reverse_num |= 1 << ((16 - 1) - i);
+        }
+    } 
+    return reverse_num; 
+}
+
+static inline uint16_t nybble_flip(uint16_t num) {
+    return ((num & 0x0F0F) << 4) | ((num & 0xF0F0) >> 4);
+}
+
+static inline uint16_t nybble_reverse(uint16_t num) {
+    return ((num & 0x000F) << 24) + ((num & 0x00F0) << 8)
+        + ((num & 0x0F00) >> 8) + ((num & 0xF000) >> 24);
 }

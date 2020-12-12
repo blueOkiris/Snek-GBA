@@ -1,16 +1,8 @@
 #include <gba.h>
-#include <sprites.h>
+#include <graphics.h>
 #include <game.h>
 
 game_state_t g_state;
-
-void set_palletes(void) {
-    OBJ_PALLETE0[1] = color(0x00, 0x00, 0x00); // black
-    OBJ_PALLETE0[2] = color(0x1F, 0x1F, 0x1F); // white
-    OBJ_PALLETE0[3] = color(0x11, 0x08, 0x00); // orange-brown
-    OBJ_PALLETE0[4] = color(0x1F, 0x14, 0x00); // gold
-    OBJ_PALLETE0[5] = color(0x11, 0x00, 0x00); // maroon
-}
 
 void reset(void) {
     g_state.plyr_width = 8;
@@ -31,7 +23,7 @@ void reset(void) {
     g_state.plyr_tile_x = ((int) g_state.plyr_head_x / 8) * 8;
     g_state.plyr_tile_y = ((int) g_state.plyr_head_y / 8) * 8;
     
-    g_state.num_bodies = 1;
+    g_state.num_bodies = 2;
     g_state.max_bodies = 100;
     
     g_state.plyr_bodies[0] = &OAM[1];
@@ -67,6 +59,7 @@ void reset(void) {
         set_obj_pos(g_state.plyr_bodies[i], 0, 0);
     }
     
-    REG_DISPLAY = 0x1000 | 0x0040; // set display parameters to enable objects
+    // Set display parameters
+    REG_DISPLAY = VIDEO_MODE0 | OBJ_ENABLE | MAP_MODE_1D | BG0_EN | BG1_EN;
     g_state.keys = 0;
 }
