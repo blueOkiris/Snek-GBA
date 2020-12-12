@@ -29,8 +29,8 @@ clean :
 	rm -rf $(OBJFLDR)
 
 .PHONY : emu
-emu:
-	$(EMU_LOC)/visualboyadvance-m
+emu : $(OBJNAME).gba
+	$(EMU_LOC)/visualboyadvance-m snek.gba
 
 # Main targets
 $(DEVKIT_LOC):

@@ -42,6 +42,7 @@ typedef unsigned short uint16_t;
 typedef signed short int16_t;
 typedef unsigned int uint32_t;
 typedef signed int int32_t;
+
 typedef uint16_t rgb15_t;
 
 #define IO_MEM      0x04000000
@@ -65,6 +66,14 @@ typedef uint16_t rgb15_t;
 
 #define KEY_UP      0x0040
 #define KEY_DOWN    0x0080
+#define KEY_LEFT    0x0020
+#define KEY_RIGHT   0x0010
+#define KEY_START   0x0008
+#define KEY_SELECT  0x0004
+#define KEY_A       0x0001
+#define KEY_B       0x0002
+#define KEY_L       0x0200
+#define KEY_R       0x0100
 #define KEY_ANY     0x03FF
 
 #define SCREEN_WIDTH    240
@@ -92,6 +101,6 @@ static inline void set_obj_pos(volatile obj_attrs *obj, int x, int y) {
     obj->attr1 = (obj->attr1 & ~OBJ_X) | (x & OBJ_X);
 }
 
-static inline int clamp(int value, int min, int max) {
+static inline double clamp(float value, float min, float max) {
     return (value < min ? min : (value > max ? max : value));
 }
