@@ -180,6 +180,10 @@ int main(void) {
                 g_state.plyr_bodies[g_state.num_bodies]->attr2 = SNAKE_BODY;
                 g_state.score += 1;
                 display_score();
+                
+                if(g_state.score == 0xFFFFFFFF) {
+                    room = DEATH;
+                }
             }
             
             // Die
