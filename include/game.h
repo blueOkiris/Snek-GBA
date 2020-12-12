@@ -33,7 +33,7 @@ typedef struct {
     int frog_x, frog_y;
     
     uint32_t keys;
-    uint32_t score;
+    uint32_t *score;
     volatile obj_attrs *score_display[10];
 } game_state_t;
 
