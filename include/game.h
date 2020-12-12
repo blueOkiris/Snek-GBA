@@ -29,6 +29,9 @@ typedef struct {
     float plyr_bodies_x[101];
     float plyr_bodies_y[101];
     
+    volatile obj_attrs *frog;
+    int frog_x, frog_y;
+    
     uint32_t keys;
 } game_state_t;
 

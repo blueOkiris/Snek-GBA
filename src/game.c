@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <gba.h>
 #include <graphics.h>
 #include <game.h>
@@ -58,6 +59,28 @@ void reset(void) {
         
         set_obj_pos(g_state.plyr_bodies[i], 0, 0);
     }
+    
+    g_state.frog = &OAM[g_state.max_bodies + 2];
+    g_state.frog->attr0 = 0;
+    g_state.frog->attr1 = 0;
+    g_state.frog->attr2 = FROG;
+    g_state.frog_x = (rand() % (240 / 8 - 2) + 1) * 8;
+    for(int i = 1; i < g_state.num_bodies + 1; i++) {
+        if(g_state.frog_x == g_state.plyr_bodies_x[i]
+                || g_state.frog_x == g_state.plyr_head_x) {
+            g_state.frog_x = (rand() % (240 / 8 - 2) + 1) * 8;
+            i = 1;
+        }
+    }
+    g_state.frog_y = (rand() % (160 / 8 - 2) + 1) * 8;
+    for(int i = 1; i < g_state.num_bodies + 1; i++) {
+        if(g_state.frog_y == g_state.plyr_bodies_x[i]
+                || g_state.frog_y == g_state.plyr_head_y) {
+            g_state.frog_y = (rand() % (160 / 8 - 2) + 1) * 8;
+            i = 1;
+        }
+    }
+    set_obj_pos(g_state.frog, g_state.frog_x, g_state.frog_y);
     
     // Set display parameters
     REG_DISPLAY = VIDEO_MODE0 | OBJ_ENABLE | MAP_MODE_1D | BG0_EN | BG1_EN;

@@ -71,6 +71,17 @@ uint16_t spr_blank[sizeof(tile_4bpp_t) / 2] = {
     0x0000, 0x0000
 };
 
+uint16_t spr_frog[sizeof(tile_4bpp_t) / 2] = {
+    0x0710, 0x0170,
+    0x7677, 0x7767,
+    0x7277, 0x7727,
+    0x0799, 0x9970,
+    0x0177, 0x7710,
+    0x1877, 0x7781,
+    0x1878, 0x8781,
+    0x8871, 0x1788
+};
+
 void load_sprites(void) {
     volatile uint16_t *snake_head_up_tile =
         (uint16_t *) TILE_MEM[4][SNAKE_HEAD_UP];
@@ -82,6 +93,7 @@ void load_sprites(void) {
         (uint16_t *) TILE_MEM[4][SNAKE_HEAD_RIGHT];
     volatile uint16_t *snake_body_tile = (uint16_t *) TILE_MEM[4][SNAKE_BODY];
     volatile uint16_t *blank_tile = (uint16_t *) TILE_MEM[4][BLANK];
+    volatile uint16_t *frog = (uint16_t *) TILE_MEM[4][FROG];
     for(int i = 0; i < sizeof(tile_4bpp_t) / 2; i += 2) {
         snake_head_up_tile[i] = spr_snake_head_up[i + 1];
         snake_head_up_tile[i + 1] = spr_snake_head_up[i];
@@ -97,6 +109,9 @@ void load_sprites(void) {
         
         blank_tile[i] = spr_blank[i + 1];
         blank_tile[i + 1] = spr_blank[i];
+        
+        frog[i] = spr_frog[i + 1];
+        frog[i + 1] = spr_frog[i];
     }
 }
 
@@ -243,4 +258,8 @@ void set_palletes(void) {
     OBJ_PALLETE0[3] = color(0x11, 0x08, 0x00); // orange-brown
     OBJ_PALLETE0[4] = color(0x1F, 0x14, 0x00); // gold
     OBJ_PALLETE0[5] = color(0x11, 0x00, 0x00); // maroon
+    OBJ_PALLETE0[6] = color(0x00, 0x00, 0x1F); // blue
+    OBJ_PALLETE0[7] = color(0x1F, 0x00, 0x00); // red
+    OBJ_PALLETE0[8] = color(0x0D, 0x02, 0x02); // dark red
+    OBJ_PALLETE0[9] = color(0x10, 0x00, 0x00); // grey red
 }
