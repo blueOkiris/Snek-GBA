@@ -82,7 +82,26 @@ void reset(void) {
     }
     set_obj_pos(g_state.frog, g_state.frog_x, g_state.frog_y);
     
+    g_state.score = 0;
+    for(int i = 0; i < 10; i++) {
+        g_state.score_display[i] = &OAM[g_state.max_bodies + 3 + i];
+        g_state.score_display[i]->attr0 = 0;
+        g_state.score_display[i]->attr1 = 0;
+        g_state.score_display[i]->attr2 = DIGIT_OFFSET;
+        set_obj_pos(g_state.score_display[i], 80 - 8 * i, 0);
+    }
+    display_score();
+    
     // Set display parameters
     REG_DISPLAY = VIDEO_MODE0 | OBJ_ENABLE | MAP_MODE_1D | BG0_EN | BG1_EN;
     g_state.keys = 0;
+}
+
+void display_score() {
+    int score = g_state.score;
+    for(int i = 0; i < 10; i++) {
+        int digit = score % 10;
+        score /= 10;
+        g_state.score_display[i]->attr2 = DIGIT_OFFSET + digit;
+    }
 }
