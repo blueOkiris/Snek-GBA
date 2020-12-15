@@ -25,7 +25,7 @@ void reset(void) {
     g_state.plyr_tile_y = ((int) g_state.plyr_head_y / 8) * 8;
     
     g_state.num_bodies = 2;
-    g_state.max_bodies = 100;
+    g_state.max_bodies = 63;
     
     g_state.plyr_bodies[0] = &OAM[1];
     g_state.plyr_bodies[0]->attr0 = 0;
@@ -82,10 +82,7 @@ void reset(void) {
     }
     set_obj_pos(g_state.frog, g_state.frog_x, g_state.frog_y);
     
-    // hardcoded ram addr. Nothing else here
-    g_state.score = (uint32_t *) 0x2000200;
-    
-    *g_state.score = 0;
+    g_state.score = 0;
     for(int i = 0; i < 10; i++) {
         g_state.score_display[i] = &OAM[g_state.max_bodies + 3 + i];
         g_state.score_display[i]->attr0 = 0;
@@ -101,7 +98,7 @@ void reset(void) {
 }
 
 void display_score() {
-    int score = *g_state.score;
+    int score = g_state.score;
     for(int i = 0; i < 10; i++) {
         int digit = score % 10;
         score /= 10;

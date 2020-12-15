@@ -175,13 +175,13 @@ int main(void) {
                             i < g_state.max_bodies + 1; i++) {
                         g_state.plyr_bodies[i]->attr2 = BLANK;
                     }
-                    *g_state.score += 500;
+                    g_state.score += 500;
                 }
                 g_state.plyr_bodies[g_state.num_bodies]->attr2 = SNAKE_BODY;
-                *g_state.score += 1;
+                g_state.score += 1;
                 display_score();
                 
-                if(*g_state.score == 0xFFFFFFFF) {
+                if(g_state.score == 0xFFFFFFFF) {
                     room = DEATH;
                 }
             }
